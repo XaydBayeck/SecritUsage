@@ -8,6 +8,7 @@
   packages = with pkgs; [
     git
     nodePackages.typescript-language-server
+    sqlite
   ];
 
   # https://devenv.sh/scripts/
