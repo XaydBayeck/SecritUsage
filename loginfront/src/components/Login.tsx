@@ -6,12 +6,24 @@ const Login: Component = () => {
   const [password, setPassword] = createSignal("")
 
   const submit = async () => {
+    const email_rp = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+
+    let login = user();
+
+    let body: string
+
+    if (email_rp.test(login)) {
+       body = JSON.stringify({ login: { Emial: login }, password: password()})
+    } else {
+       body = JSON.stringify({ login: { Name: login }, password: password()})
+    }
+
     const response = await fetch("/login", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ login: { Name: user() }, password: password() })
+      body: body
     })
     response.json()
   }
@@ -20,7 +32,7 @@ const Login: Component = () => {
     <div>
       <TextInput
         name='用户名：'
-        placeholder='username/email/phone'
+        placeholder='username/email'
         value={user}
         setValue={setUser} />
       <TextInput
