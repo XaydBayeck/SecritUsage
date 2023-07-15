@@ -1,10 +1,17 @@
-use std::time::Duration;
+use std::{sync::Arc, time::Duration};
 
-use axum::{response::Redirect, routing::get, Router};
+use axum::{
+    response::Redirect,
+    routing::{get, post},
+    Router,
+};
 use sqlx::sqlite::SqlitePoolOptions;
+use tower_cookies::CookieManagerLayer;
 use tower_http::services::ServeDir;
 use tower_http::trace::TraceLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+use crate::user::login;
 
 mod user;
 
@@ -33,9 +40,11 @@ async fn main() {
             "/",
             get(|| async { Redirect::permanent("/static/index.html") }),
         )
+        .route("/login", post(login))
         .nest_service("/static", ServeDir::new("static"))
         .nest_service("/assets", ServeDir::new("static/assets"))
-        .with_state(pool)
+        .with_state(Arc::new(pool))
+        .layer(CookieManagerLayer::new())
         .layer(TraceLayer::new_for_http());
 
     tracing::debug!("listening on http://127.0.0.1:3000");

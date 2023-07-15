@@ -8,7 +8,10 @@ const Login: Component = () => {
   const submit = async () => {
     const response = await fetch("/login", {
       method: 'POST',
-      body: JSON.stringify({ name: user(), password: password() })
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ login: { Name: user() }, password: password() })
     })
     response.json()
   }
@@ -22,10 +25,11 @@ const Login: Component = () => {
         setValue={setUser} />
       <TextInput
         name='密码：'
+        type='password'
         placeholder='password'
-        value={password}
         setValue={setPassword} />
       <button onClick={submit}>Login</button>
+      <a href='/signup'>注册</a>
     </div>
   )
 }

@@ -38,9 +38,8 @@ pub enum Login {
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct UserLogin {
-    login: Login,
-    password: String,
-    validate: String,
+    pub login: Login,
+    pub password: String,
 }
 
 impl From<Selector> for (&str, String) {
